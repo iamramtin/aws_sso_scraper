@@ -55,7 +55,7 @@ def save_credentials(credentials, file_path):
         for cred in credentials:
             file.write(str(cred) + "\n\n")
 
-    print("Saved credentials to: %s", file_path)
+    print("Saved credentials to:", file_path)
 
 
 def load_cookies(context, page, email, password):
@@ -72,9 +72,10 @@ def save_cookies(context):
 def login(page, email, password):
     print("Navigating to AWS SSO portal...")
     page.goto("https://synlz.awsapps.com/start/#/")
+    page.wait_for_load_state("networkidle")
 
     try:
-        email_field = page.get_by_placeholder("someone@example.com", timeout=10000)
+        email_field = page.locator('input[placeholder="someone@example.com"]')
         if email_field:
             email_field.click()
             email_field.fill(email)
@@ -82,7 +83,7 @@ def login(page, email, password):
         pass
     
     try:
-        password_field = page.get_by_placeholder("Password", timeout=10000)
+        password_field = page.locator('input[placeholder="Password"]')
         if password_field:
             print("Logging in...")
             password_field.click()
@@ -97,7 +98,7 @@ def login(page, email, password):
     try:
         checkbox = page.get_by_label("Don't ask again for 60 days", timeout=10000)
         if checkbox:
-            print("2FA checkbox found and checked.")
+            print("Verifying 2FA...")
             checkbox.check()
     except:
         pass
@@ -107,7 +108,7 @@ def login(page, email, password):
     
 def run(playwright: Playwright, args) -> None:
     email = args.email
-    password = getpass.getpass("Enter your password: ")
+    password = getpass.getpass("Enter your password:\n")
     
     if not email or not password:
         print("Please set the environment variable AWS_SS0_EMAIL and enter your password.")
