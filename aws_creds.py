@@ -44,10 +44,11 @@ def get_credentials(page, account):
     print("Getting credentials for account:", account)
     page.locator("portal-instance").filter(has_text="{} #".format(account)).locator("div").nth(1).click()
     page.locator("portal-instance").filter(has_text="{} #".format(account)).locator("#temp-credentials-button").click()
-    page.locator("#hover-copy-env").click()
+
+    credential_text = page.locator("#cli-cred-file-code").inner_text()
     page.get_by_text("×").click()
-    
-    return pyperclip.paste()
+
+    return credential_text
 
 
 def save_credentials(credentials, file_path):
@@ -62,7 +63,7 @@ def load_cookies(context, page, email, password):
     print("Loading cookies...")
     context.add_cookies(json.loads(Path(COOKIES).read_text()))
 
-    login(page, email, password)
+    page.goto("https://synlz.awsapps.com/start/#/")
 
 
 def save_cookies(context):
@@ -110,8 +111,8 @@ def run(playwright: Playwright, args) -> None:
     email = args.email
     password = getpass.getpass("Enter your password:\n")
     
-    if not email or not password:
-        print("Please set the environment variable AWS_SS0_EMAIL and enter your password.")
+    if not password:
+        print("Please enter your password and try again.")
         return
     
     try:
