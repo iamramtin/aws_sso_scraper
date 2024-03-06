@@ -1,7 +1,6 @@
 import getpass
 import os
 import json
-import pyperclip
 import argparse
 from pathlib import Path
 from playwright.sync_api import Playwright, sync_playwright
