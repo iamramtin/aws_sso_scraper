@@ -62,8 +62,6 @@ def load_cookies(context, page, email, password):
     print("Loading cookies...")
     context.add_cookies(json.loads(Path(COOKIES).read_text()))
 
-    page.goto("https://synlz.awsapps.com/start/#/")
-
 
 def save_cookies(context):
     Path(COOKIES).write_text(json.dumps(context.cookies()))
@@ -121,8 +119,8 @@ def run(playwright: Playwright, args) -> None:
 
         if os.path.exists(COOKIES) and os.path.getsize(COOKIES) > 0:
             load_cookies(context, page, email, password)
-        else:
-            login(page, email, password)
+
+        login(page, email, password)
         
         page.locator("#app-03e8643328913682").click()
         credentials = [get_credentials(page, account) for account in args.accounts]
